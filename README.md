@@ -20,5 +20,5 @@ For more information you can visit https://learnopengl.com/#!Getting-started/Cre
 
 In this section we create a window! It is our canvas for painting!
 <center>
-  <img src="http://ovi8mw7d8.bkt.clouddn.com/GLFWwindow.PNG" width="300" />
+  <img src="http://ovi8mw7d8.bkt.clouddn.com/GLFWwindow.PNG" width="600" />
 </center>
