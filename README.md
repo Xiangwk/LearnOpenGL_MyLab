@@ -16,9 +16,11 @@ To get these library's source code you can visit:
 
 To load an image we just need stb_image.h. Add it to your project as stb_image.h and create an additional C++ file with the following code:
 
-'#define STB_IMAGE_IMPLEMENTATION'
+```cpp
+#define STB_IMAGE_IMPLEMENTATION
 
-'#include "stb_image.h"'
+#include "stb_image.h"
+```
 
 If you still don't understand how to use this header file, please reference to my section III: Texture
 
