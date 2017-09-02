@@ -20,8 +20,20 @@ For more information you can visit https://learnopengl.com/#!Getting-started/Cre
 
 In this section we create a window! It is our canvas for painting!
 
+1. Create GLFW window and OpenGL context;
+2. Init GLAD to get address of the OpenGL functions;
+3. Create a viewport;
+4. Game Loop;
+
 # II. Hellow Triangle
 
 In this section we draw a triangle and a quad on the canvas we create in the last section.
 
 It use some significant concept: VAO, VBO and EBO.
+
+1. Create VAO to store the triangle's vertex attribute;
+2. Create VBO to store the vertex data;
+3. (Option)Create EBO to store the indices of triangle;
+4. Set vertex attribute;
+5. Create and use shader;
+6. Draw;
