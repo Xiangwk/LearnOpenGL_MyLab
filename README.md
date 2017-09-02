@@ -19,6 +19,7 @@ For more information you can visit https://learnopengl.com/#!Getting-started/Cre
 # I. Create a GLFW window
 
 In this section we create a window! It is our canvas for painting!
+
 <center>
   <img src="http://ovi8mw7d8.bkt.clouddn.com/GLFWwindow.PNG" width="600" />
 </center>
@@ -28,5 +29,7 @@ In this section we create a window! It is our canvas for painting!
 In this section we draw a triangle and a quad on the canvas we create in the last section.
 
 It use some significant concept: VAO, VBO and EBO.
+
 <div align="center">
-<img src="http://ovi8mw7d8.bkt.clouddn.com/HellowTriangle.PNG" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/DrawQuadWithElements.PNG" width="400" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/HellowTriangle.PNG" width="400" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/DrawQuadWithElements.PNG" width="400" />
