@@ -30,5 +30,6 @@ In this section we draw a triangle and a quad on the canvas we create in the las
 
 It use some significant concept: VAO, VBO and EBO.
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/HellowTriangle.PNG">
-<img src="http://ovi8mw7d8.bkt.clouddn.com/DrawQuadWithElements.PNG">
+<div align="center">
+<img src="http://ovi8mw7d8.bkt.clouddn.com/HellowTriangle.PNG" width="300" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/DrawQuadWithElements.PNG" width="300" />
