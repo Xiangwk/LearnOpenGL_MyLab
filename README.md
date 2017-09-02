@@ -20,7 +20,7 @@ For more information you can visit https://learnopengl.com/#!Getting-started/Cre
 
 In this section we create a window! It is our canvas for painting!
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/GLFWwindow.PNG" width="400" />
+![GLFW window](http://ovi8mw7d8.bkt.clouddn.com/GLFWwindow.PNG) "GLFW window")
 
 # II. Hellow Triangle
 
@@ -28,4 +28,4 @@ In this section we draw a triangle and a quad on the canvas we create in the las
 
 It use some significant concept: VAO, VBO and EBO.
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/twoTriangles.PNG" width="400" />
+![](http://ovi8mw7d8.bkt.clouddn.com/twoTriangles.PNG) "Two Triangles")
