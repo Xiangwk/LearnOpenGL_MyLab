@@ -33,7 +33,7 @@ It use some significant concept: VAO, VBO and EBO.
 
 1. Create VAO to store the triangle's vertex attribute;
 2. Create VBO to store the vertex data;
-3. (Option)Create EBO to store the indices of triangle;
+3. (Optional)Create EBO to store the indices of triangle;
 4. Set vertex attribute;
 5. Create and use shader;
 6. Draw;
