@@ -10,11 +10,16 @@
 class Shader
 {
 public:
+	GLuint program;
+
 	Shader(const std::string &vPath, const std::string &fPath);
 	void use() const;
+	void setBool(const std::string &name, bool value) const;
+	void setInt(const std::string &name, int value) const;
+	void setFloat(const std::string &name, float value) const;
 
 private:
-	GLuint program;
+	void checkErro(GLuint shader, const std::string &type) const;
 };
 
 Shader::Shader(const std::string &vPath, const std::string &fPath)
@@ -49,38 +54,20 @@ Shader::Shader(const std::string &vPath, const std::string &fPath)
 	GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vshader, 1, &vc, nullptr);
 	glCompileShader(vshader);
-	glGetShaderiv(vshader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vshader, 512, nullptr, infoLog);
-		std::cerr << "ERRO::SHADER::VERTEX::COMPILATION_FAILD" << infoLog;
-		std::abort();
-	}
+	checkErro(vshader, "VERTEX");
 
 	//compile fragment shader
 	GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fshader, 1, &fc, nullptr);
 	glCompileShader(fshader);
-	glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fshader, 512, nullptr, infoLog);
-		std::cerr << "ERRO::SHADER::FRAGMENT::COMPILATION_FAILD" << infoLog;
-		std::abort();
-	}
+	checkErro(fshader, "FRAGMENT");
 
 	//create shader program and link the shaders
 	program = glCreateProgram();
 	glAttachShader(program, vshader);
 	glAttachShader(program, fshader);
 	glLinkProgram(program);
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(program, 512, nullptr, infoLog);
-		std::cerr << "ERRO::PROGRAM::LINKED_FAILD" << infoLog;
-		std::abort();
-	}
+	checkErro(program, "PROGRAM");
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
@@ -89,4 +76,45 @@ Shader::Shader(const std::string &vPath, const std::string &fPath)
 void Shader::use() const
 {
 	glUseProgram(program);
+}
+
+void Shader::setBool(const std::string &name, bool value) const
+{
+	glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+}
+void Shader::setInt(const std::string &name, int value) const
+{
+	glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+}
+
+void Shader::setFloat(const std::string &name, float value) const
+{
+	glUniform1f(glGetUniformLocation(program, name.c_str()), value);
+}
+
+void Shader::checkErro(GLuint shader, const std::string &type) const
+{
+	GLint success = 0;
+	char infoLog[512] = {};
+
+	if (type != "PROGRAM")
+	{
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+			std::cerr << "ERRO::SHADER::" << type << "::COMPILATION_FAILD\n" << infoLog;
+			std::abort();
+		}
+	}
+	else
+	{
+		glGetProgramiv(shader, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			glGetProgramInfoLog(shader, 512, nullptr, infoLog);
+			std::cerr << "ERRO::PROGRAM::LINKED_FAILD" << infoLog;
+			std::abort();
+		}
+	}
 }

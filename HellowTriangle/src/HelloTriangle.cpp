@@ -13,9 +13,9 @@ GLuint WIDTH = 800;
 GLuint HEIGHT = 600;
 
 //the ids
-enum VAO_IDs{ orangeTriangle, yellowTriangle, NumVAOs };
-enum Buffer_IDs{ orangeTriangleBuffer, yellowTriangleBuffer, NumBuffers };
-enum Attrib_IDs{ vPosition = 0 };
+enum VAO_IDs{ orangeTriangle, paletteTriangle, NumVAOs };
+enum Buffer_IDs{ orangeTriangleBuffer, paletteTriangleBuffer, NumBuffers };
+enum Attrib_IDs{ vPosition = 0, vColor = 1 };
 //the buffer used to store ids
 GLuint VAOs[NumVAOs];
 GLuint Buffers[NumBuffers];
@@ -31,6 +31,7 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height);
 struct Vertex
 {
 	glm::vec3 position;    //position
+	glm::vec3 color;       //color
 };
 
 int main()
@@ -64,12 +65,12 @@ int main()
 
 	//triangle's vertex data
 	std::vector<Vertex> triangleVertex{
-		Vertex{ glm::vec3(-0.5f, -0.5f, 0.0f) },
-		Vertex{ glm::vec3( 0.5f, -0.5f, 0.0f) },
-		Vertex{ glm::vec3( 0.0f,  0.5f, 0.0f) }
+		Vertex{ glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f) },
+		Vertex{ glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f) },
+		Vertex{ glm::vec3( 0.0f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f) }
 	};
 
-	//create triangle object
+	//create orange triangle object
 	glGenVertexArrays(NumVAOs, VAOs);
 	glBindVertexArray(VAOs[orangeTriangle]);
 	//transmit the data of triangle's vertex
@@ -77,12 +78,23 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, Buffers[orangeTriangleBuffer]);
 	glBufferData(GL_ARRAY_BUFFER, triangleVertex.size() * sizeof(Vertex), &triangleVertex[0], GL_STATIC_DRAW);
 	//set attribute pointer
-	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(0));
 	glEnableVertexAttribArray(vPosition);
 	glBindVertexArray(0);
 
+	//create another triangle
+	glBindVertexArray(VAOs[paletteTriangle]);
+	glBindBuffer(GL_ARRAY_BUFFER, Buffers[paletteTriangleBuffer]);
+	glBufferData(GL_ARRAY_BUFFER, triangleVertex.size() * sizeof(Vertex), &triangleVertex[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(vPosition, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(0));
+	glEnableVertexAttribArray(vPosition);
+	glVertexAttribPointer(vColor, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(vColor);
+	glBindVertexArray(0);
+
 	//create shader
-	Shader shader("orangeTriangle.vert", "orangeTriangle.frag");
+	Shader orangeShader("orangeTriangle.vert", "orangeTriangle.frag");
+	Shader paletteShader("paletteTriangle.vert", "paletteTriangle.frag");
 
 	//set background color
 	glClearColor(0.2, 0.3, 0.3, 1.0);
@@ -97,9 +109,14 @@ int main()
 		//check events
 		glfwPollEvents();
 
-		//draw our triangle
+		//draw our orange triangle
 		glBindVertexArray(VAOs[orangeTriangle]);
-		shader.use();
+		orangeShader.use();
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+		//draw the paletteTriangle
+		glBindVertexArray(VAOs[paletteTriangle]);
+		paletteShader.use();
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
 
