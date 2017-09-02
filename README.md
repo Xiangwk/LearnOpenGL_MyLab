@@ -12,7 +12,17 @@ To get these library's source code you can visit:
 
 **glad:** <http://glad.dav1d.de/> This is a library to help you get the address of opengl's functions to use them.
 
-For more information you can visit https://learnopengl.com/#!Getting-started/Creating-a-window
+**stb:** <https://github.com/nothings/stb> This is a very popular single header image loading library by Sean Barrett that is able to load most popular file formats and is easy to integrate in your project(s).
+
+To load an image we just need stb_image.h. Add it to your project as stb_image.h and create an additional C++ file with the following code:
+
+'#define STB_IMAGE_IMPLEMENTATION
+
+ #include "stb_image.h"'
+
+If you still don't understand how to use this header file, please reference to my section III: Texture
+
+For more information about the 3rdParty library, visit https://learnopengl.com/#!Getting-started/Creating-a-window
 
 ***
 
@@ -37,3 +47,17 @@ It use some significant concept: VAO, VBO and EBO.
 4. Set vertex attribute;
 5. Create and use shader;
 6. Draw;
+
+# III. Texture
+
+In this section we attach two textures to our quad.
+
+To create a texture object we need to:
+
+1. Generate texture id;
+2. Bind id to a texture target;
+3. Set wrapping/filtering option;
+4. load image;
+5. Generate texture using the image data;
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/simpleTexture.PNG" width="400" />
