@@ -28,4 +28,4 @@ In this section we draw a triangle and a quad on the canvas we create in the las
 
 It use some significant concept: VAO, VBO and EBO.
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/twoTriangles.PNG" width="400">
+<img src="http://ovi8mw7d8.bkt.clouddn.com/TwoTriangles.JPG" width="400">
