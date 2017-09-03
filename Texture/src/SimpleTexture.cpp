@@ -30,7 +30,7 @@ void processInput(GLFWwindow *window);
 //frame buffer size callback
 void framebufferSizeCallback(GLFWwindow *window, int width, int height);
 //load texture image and bind to id
-void loadTexture2D(const std::string &imageFile, GLuint id, const std::string &imageFormat, bool flip);
+void loadTexture2D(const std::string &imageFile, GLuint id, bool flip);
 
 //this a vertex struct, we will encapsulate every vertex attribute in it
 struct Vertex
@@ -105,8 +105,8 @@ int main()
 
 	//create texture
 	glGenTextures(NumTextures, Textures);
-	loadTexture2D("image/container.jpg",   Textures[woodContainer], "JPEG", false);
-	loadTexture2D("image/awesomeface.png", Textures[awesomeface],   "PNG" ,  true);
+	loadTexture2D("image/container.jpg",   Textures[woodContainer], false);
+	loadTexture2D("image/awesomeface.png", Textures[awesomeface],   true);
 
 	//create shader
 	Shader shader("quad.vert", "quad.frag");
@@ -172,7 +172,7 @@ void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void loadTexture2D(const std::string &imageFile, GLuint id, const std::string &imageFormat, bool flip)
+void loadTexture2D(const std::string &imageFile, GLuint id, bool flip)
 {
 	glBindTexture(GL_TEXTURE_2D, id);
 	//set the wrapping/filtering option
@@ -187,9 +187,10 @@ void loadTexture2D(const std::string &imageFile, GLuint id, const std::string &i
 	unsigned char *imageData = stbi_load(imageFile.c_str(), &imageWidth, &imageHeight, &nrChannel, 0);
 	if (!imageData)
 		std::cerr << "Failed to load texture\n";
-	if (imageFormat == "JPEG")
+	std::string format = imageFile.substr(imageFile.find('.') + 1);
+	if (format == "jpg")
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
-	if (imageFormat == "PNG")
+	if (format == "png")
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(imageData);
