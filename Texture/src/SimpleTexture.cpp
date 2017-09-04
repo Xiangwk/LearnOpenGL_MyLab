@@ -187,7 +187,7 @@ void loadTexture2D(const std::string &imageFile, GLuint id, bool flip)
 	unsigned char *imageData = stbi_load(imageFile.c_str(), &imageWidth, &imageHeight, &nrChannel, 0);
 	if (!imageData)
 		std::cerr << "Failed to load texture\n";
-	std::string format = imageFile.substr(imageFile.find('.') + 1);
+	std::string format = imageFile.substr(imageFile.rfind('.') + 1);
 	if (format == "jpg")
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
 	if (format == "png")
