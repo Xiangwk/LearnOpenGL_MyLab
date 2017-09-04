@@ -63,3 +63,18 @@ To create a texture object we need to:
 5. Generate texture using the image data;
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/simpleTexture.PNG" width="400" />
+
+# IV. Camera
+
+In this section I wrote two camera class, one is FreeCamera and another is FPSCamera.
+The single header file is in the include/ folder. Example in the src/ folder.
+The image's used to generate textures is now move to the LearnOpenGL_MyNotebook/image/ folder.
+
+Operation:
+W ------- camera move forward
+S ------- camera move backward
+A ------- camera strafe left
+D ------- camera strafe right
+
+mouse move   ------ rotate the len
+mouse scroll ------ len zoom
