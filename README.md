@@ -71,10 +71,15 @@ The single header file is in the include/ folder. Example in the src/ folder.
 The image's used to generate textures is now move to the LearnOpenGL_MyNotebook/image/ folder.
 
 Operation:
+
 W ------- camera move forward
+
 S ------- camera move backward
+
 A ------- camera strafe left
+
 D ------- camera strafe right
 
 mouse move   ------ rotate the len
+
 mouse scroll ------ len zoom
