@@ -40,7 +40,7 @@ public:
 	//get view matrix, it is the essential of an opengl camera
 	glm::mat4 getViewMatrix();
 	//camera movement
-	virtual void processKeyboard(CameraMovement direct, GLfloat deltaTime) = 0;
+	virtual void processKeyboard(CameraMovement direction, GLfloat deltaTime) = 0;
 	//camera rotation
 	virtual void processMouseMovement(GLfloat x, GLfloat y);
 	//camera' zoom
@@ -73,6 +73,28 @@ glm::mat4 BaseCamera::getViewMatrix()
 	return glm::lookAt(position, position + front, up);
 }
 
+void BaseCamera::processKeyboard(CameraMovement direction, GLfloat deltaTime)
+{
+	GLfloat v = moveSpeed * deltaTime;
+	switch (direction)
+	{
+	case FORWARD:
+		position += front * v;
+		break;
+	case BACKWARD:
+		position -= front * v;
+		break;
+	case LEFT:
+		position -= right * v;
+		break;
+	case RIGHT:
+		position += right * v;
+		break;
+	default:
+		break;
+	}
+}
+
 void BaseCamera::processMouseMovement(GLfloat deltaX, GLfloat deltaY)
 {
 	//the x-oriented position's difference in one frame
@@ -100,6 +122,7 @@ void BaseCamera::processMouseScroll(GLfloat z)
 	if (zoom > 45.0f)
 		zoom = 45.0f;
 }
+
 //this is a free camera that can move everywhere in the space
 class FreeCamera : public BaseCamera
 {
@@ -107,31 +130,14 @@ public:
 	FreeCamera(const glm::vec3 &pos = glm::vec3(0.0f, 0.0f, 0.0f),
 		const glm::vec3 &u = glm::vec3(0.0f, 1.0f, 0.0f),
 		GLfloat p = PITCH, GLfloat y = YAW);
-	void processKeyboard(CameraMovement direct, GLfloat deltaTime);
+	void processKeyboard(CameraMovement direction, GLfloat deltaTime) override;
 };
 
 FreeCamera::FreeCamera(const glm::vec3 &pos, const glm::vec3 &u, GLfloat p, GLfloat y) : BaseCamera(pos, u, p, y){}
 
-void FreeCamera::processKeyboard(CameraMovement direct, GLfloat deltaTime)
+void FreeCamera::processKeyboard(CameraMovement direction, GLfloat deltaTime)
 {
-	GLfloat v = moveSpeed * deltaTime;
-	switch (direct)
-	{
-	case FORWARD:
-		position += front * v;
-		break;
-	case BACKWARD:
-		position -= front * v;
-		break;
-	case LEFT:
-		position -= right * v;
-		break;
-	case RIGHT:
-		position += right * v;
-		break;
-	default:
-		break;
-	}
+	BaseCamera::processKeyboard(direction, deltaTime);
 }
 
 //this is a fps camera that can move only on the ground(the plane which y = 0)
@@ -141,31 +147,14 @@ public:
 	FPSCamera::FPSCamera(const glm::vec3 &pos = glm::vec3(0.0f, 0.0f, 0.0f),
 		const glm::vec3 &u = glm::vec3(0.0f, 1.0f, 0.0f),
 		GLfloat p = PITCH, GLfloat y = YAW);
-	void processKeyboard(CameraMovement direct, GLfloat deltaTime);
+	void processKeyboard(CameraMovement direction, GLfloat deltaTime) override;
 };
 
 FPSCamera::FPSCamera(const glm::vec3 &pos, const glm::vec3 &u, GLfloat p, GLfloat y) : BaseCamera(pos, u, p, y){}
 
-void FPSCamera::processKeyboard(CameraMovement direct, GLfloat deltaTime)
+void FPSCamera::processKeyboard(CameraMovement direction, GLfloat deltaTime)
 {
-	GLfloat v = moveSpeed * deltaTime;
-	switch (direct)
-	{
-	case FORWARD:
-		position += front * v;
-		break;
-	case BACKWARD:
-		position -= front * v;
-		break;
-	case LEFT:
-		position -= right * v;
-		break;
-	case RIGHT:
-		position += right * v;
-		break;
-	default:
-		break;
-	}
+	BaseCamera::processKeyboard(direction, deltaTime);
 	//we cannot leave the ground
 	position.y = 0;
 }
