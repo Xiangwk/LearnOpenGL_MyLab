@@ -83,3 +83,15 @@ D ------- camera strafe right
 mouse move   ------ rotate the len
 
 mouse scroll ------ len zoom
+
+# V. Lighting
+
+In this section I create a base scene with lighting, and in the source code you can see how troublesome to set a light.
+
+Our scene just have 1 direcional light, 4 point lights and a spot light, 10 same boxes just in different position.
+
+To set the uniform value there are nearly 50 lines of code, if more objects in our scene it must be a horrible work.
+
+In next section I will optimize the implementation.
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/lighting.png" width="400" />
