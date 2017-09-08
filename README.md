@@ -95,3 +95,11 @@ To set the uniform value there are nearly 50 lines of code, if more objects in o
 In next section I will optimize the implementation.
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/lighting.png" width="400" />
+
+# VI. Uniform Buffer Object
+
+In the Lighting section I said I will optimize the lighting implementation. So you can see this section.
+
+With UBO(Uniform Buffer Object), the same uniform value in different shaders only need to set once.
+
+The Lights in the scene is a good example to use UBO.
