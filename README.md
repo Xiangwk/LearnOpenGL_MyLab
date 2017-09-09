@@ -103,3 +103,5 @@ In the Lighting section I said I will optimize the lighting implementation. So y
 With UBO(Uniform Buffer Object), the same uniform value in different shaders only need to set once.
 
 The Lights in the scene is a good example to use UBO.
+
+I also create a UBO for store the view matrix and projection matrix!
