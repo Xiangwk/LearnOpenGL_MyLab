@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 
 layout(location = 0) in vec3 vPosition;
 layout(location = 1) in vec3 vNormal;
@@ -9,8 +9,13 @@ out vec3 FragPos;
 out vec2 TexCoord;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+
+layout(std140, binding = 0) uniform Matrix
+{
+    mat4 view;
+    mat4 projection;
+};
+
 
 void main()
 {

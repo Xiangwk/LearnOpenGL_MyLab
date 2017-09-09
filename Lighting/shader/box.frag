@@ -1,4 +1,4 @@
-#version 330 core
+#version 420 core
 
 in vec3 Normal;
 in vec3 FragPos;
@@ -11,6 +11,19 @@ struct Material
     sampler2D diffuse;
 	sampler2D specular;
 	float shininess;
+};
+
+struct Attenuation
+{
+    float constant;
+	float linear;
+	float quadratic;
+};
+
+struct Cutoff
+{
+    float cutoff;
+	float outCutoff;
 };
 
 struct DirectionalLight
@@ -31,35 +44,36 @@ struct PointLight
 	vec3 specular;
 
 	//the attenuation factor
-	float constant;
-	float linear;
-	float quadratic;
+	Attenuation atten;
 };
 
 struct SpotLight
 {
     vec3 position;
 	vec3 direction;
-	//cutoff angle
-	float cutoff;
-	float outCutoff;
-
-	//the attenuation factor
-	float constant;
-	float linear;
-	float quadratic;
 
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	//the attenuation factor
+	Attenuation atten;
+
+	//cutoff angle
+	Cutoff co;
 };
 
 const int PointLightNum = 4;
+const int SpotLightNum = 1;
 
 uniform Material material;
-uniform DirectionalLight dirLight;
-uniform PointLight pointLights[PointLightNum];
-uniform SpotLight torch;
+
+layout(std140, binding = 1) uniform Lights
+{
+    DirectionalLight dirLight;
+    PointLight pointLights[PointLightNum];
+    SpotLight torch[SpotLightNum];
+};
 
 uniform vec3 viewPos;
 
@@ -76,7 +90,8 @@ void main()
     result += calcDirLight(dirLight, Normal, viewPos);
 	for(int i = 0; i < PointLightNum; ++i)
 	    result += calcPointLight(pointLights[i], Normal, FragPos, viewPos);
-	//result += calcSpotLight(torch, Normal, FragPos, viewPos);
+	for(int i = 0; i < SpotLightNum; ++i)
+	    result += calcSpotLight(torch[i], Normal, FragPos, viewPos);
 
     fragColor = vec4(result, 1.0f);
 }
@@ -112,7 +127,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewPos)
 
 	//calculate attenuation
 	float d = length(light.position - fragPos);
-	float atten = 1.0f / (light.constant + light.linear * d + light.quadratic * d * d);
+	float atten = 1.0f / (light.atten.constant + light.atten.linear * d + light.atten.quadratic * d * d);
 
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
 	vec3 diffuse = light.diffuse * diff(ld, n) * vec3(texture(material.diffuse, TexCoord));
@@ -129,12 +144,12 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewPos)
 
 	//calculate cutoff
 	float theta = dot(-ld, light.direction);
-	float epsilon = light.cutoff - light.outCutoff;
-	float iten = clamp((theta - light.outCutoff) / epsilon, 0.0f, 1.0f);
+	float epsilon = light.co.cutoff - light.co.outCutoff;
+	float iten = clamp((theta - light.co.outCutoff) / epsilon, 0.0f, 1.0f);
 
 	//calculate attenuation
 	float d = length(light.position - fragPos);
-	float atten = 1.0f / (light.constant + light.linear * d + light.quadratic * d * d);
+	float atten = 1.0f / (light.atten.constant + light.atten.linear * d + light.atten.quadratic * d * d);
 
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
 	vec3 diffuse = light.diffuse * diff(ld, n) * vec3(texture(material.diffuse, TexCoord));

@@ -9,6 +9,7 @@
 
 #include <Shader.h>
 #include <Camera.h>
+#include "Light.h"
 #include "VertexDataLoader.h"
 
 #include <iostream>
@@ -21,11 +22,13 @@ GLuint HEIGHT = 600;
 enum VAO_IDs{ box, lamp, NumVAOs };
 enum Buffer_IDs{ boxBuffer, lampBuffer, NumBuffers };
 enum Texture_IDs{ wood, iron, NumTextures };
+enum Uniform_IDs{ lights, vpMatirx, NumUniforms };
 enum Attrib_Ids{ vPostion, vNormal, vTexCoord };
 
 GLuint VAOs[NumVAOs];
 GLuint Buffers[NumBuffers];
 GLuint Textures[NumTextures];
+GLuint Uniforms[NumUniforms];
 
 glm::vec3 cameraPos(0.0f, 0.0f, 3.0f);
 FreeCamera camera(cameraPos);
@@ -41,6 +44,9 @@ bool firstMouse = true;
 GLfloat lastX = GLfloat(WIDTH) / 2;
 GLfloat lastY = GLfloat(HEIGHT) / 2;
 
+const GLint PointLightNum = 4;
+const GLint SpotLightNum = 1;
+
 const glm::vec3 boxPositions[] = 
 {
 	glm::vec3(0.0f, 0.0f, 0.0f),
@@ -55,7 +61,7 @@ const glm::vec3 boxPositions[] =
 	glm::vec3(-1.3f, 1.0f, -1.5f)
 };
 
-const glm::vec3 pointLightPositions[] = 
+const glm::vec3 pointLightPositions[PointLightNum] = 
 {
 	glm::vec3(0.7f, 0.2f, 2.0f),
 	glm::vec3(2.3f, -3.3f, -4.0f),
@@ -133,13 +139,72 @@ int main()
 	glEnableVertexAttribArray(vPostion);
 	glBindVertexArray(0);
 
+	Shader boxShader("box.vert", "box.frag");
+	Shader lampShader("lamp.vert", "lamp.frag");
+
+	
+	glGenBuffers(NumUniforms, Uniforms);
+	//create view projection matrix ubo
+	glBindBuffer(GL_UNIFORM_BUFFER, Uniforms[vpMatirx]);
+	glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), nullptr, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, Uniforms[vpMatirx]);
+	//create lights ubo
+	glBindBuffer(GL_UNIFORM_BUFFER, Uniforms[lights]);
+	glBufferData(GL_UNIFORM_BUFFER, 64 + PointLightNum * 80 + SpotLightNum * 112, nullptr, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, Uniforms[lights]);
+
+	//directional light
+	DirLight dLight
+	{
+		glm::vec3(-0.2f, -1.0f, -0.3f),
+		glm::vec3(0.02f, 0.02f, 0.02f),
+		glm::vec3(0.3f, 0.3f, 0.3f),
+		glm::vec3(0.5f, 0.5f, 0.5f)
+	};
+	//point lights
+	std::vector<PointLight> pLights;
+	for (size_t i = 0; i < PointLightNum; ++i)
+	{
+		PointLight pLight
+		{
+			pointLightPositions[i],
+			glm::vec3(0.05f, 0.05f, 0.05f),
+			glm::vec3(0.8f, 0.8f, 0.8f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			{ 1.0f, 0.09f, 0.032f }
+		};
+		pLights.push_back(pLight);
+	}
+	//spot lights
+	std::vector<SpotLight> sLights;
+	for (size_t i = 0; i < SpotLightNum; ++i)
+	{
+		SpotLight torch
+		{
+			camera.position,
+			camera.front,
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			glm::vec3(1.0f, 1.0f, 1.0f),
+			{ 1.0f, 0.09f, 0.032f },
+			{ glm::cos(glm::radians(8.0f)), glm::cos(glm::radians(15.0f)) }
+		};
+		sLights.push_back(torch);
+	}
+	//set the lights uniform
+	dLight.setUniform(Uniforms[lights], 0);
+	for (size_t i = 0; i < PointLightNum; ++i)
+	{
+		GLuint baseOffset = 64 + i * 80;
+		pLights[i].setUniform(Uniforms[lights], baseOffset);
+	}
+
 	//create diffuse texture and specular texture
 	glGenTextures(NumTextures, Textures);
 	loadTexture2D("../../../image/container2.png", Textures[wood], false);
 	loadTexture2D("../../../image/container2_specular.png", Textures[iron], false);
-
-	Shader boxShader("box.vert", "box.frag");
-	Shader lampShader("lamp.vert", "lamp.frag");
 
 	glm::mat4 trans;
 	boxShader.use();
@@ -148,52 +213,6 @@ int main()
 	boxShader.setUniformInt("material.diffuse", 0);
 	boxShader.setUniformInt("material.specular", 1);
 	boxShader.setUniformFloat("material.shininess", 32.0f);
-	//set light attribute
-	boxShader.setUniformVec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-	boxShader.setUniformVec3("dirLight.ambient", glm::vec3(0.02f, 0.02f, 0.02f));
-	boxShader.setUniformVec3("dirLight.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-	boxShader.setUniformVec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-	//point light 1
-	boxShader.setUniformVec3("pointLights[0].position", pointLightPositions[0]);
-	boxShader.setUniformVec3("pointLights[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-	boxShader.setUniformVec3("pointLights[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-	boxShader.setUniformVec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	boxShader.setUniformFloat("pointLights[0].constant", 1.0f);
-	boxShader.setUniformFloat("pointLights[0].linear", 0.09f);
-	boxShader.setUniformFloat("pointLights[0].quadratic", 0.032f);
-	//point light 2
-	boxShader.setUniformVec3("pointLights[1].position", pointLightPositions[1]);
-	boxShader.setUniformVec3("pointLights[1].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-	boxShader.setUniformVec3("pointLights[1].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-	boxShader.setUniformVec3("pointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	boxShader.setUniformFloat("pointLights[1].constant", 1.0f);
-	boxShader.setUniformFloat("pointLights[1].linear", 0.09f);
-	boxShader.setUniformFloat("pointLights[1].quadratic", 0.032f);
-	//point light 3
-	boxShader.setUniformVec3("pointLights[2].position", pointLightPositions[2]);
-	boxShader.setUniformVec3("pointLights[2].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-	boxShader.setUniformVec3("pointLights[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-	boxShader.setUniformVec3("pointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	boxShader.setUniformFloat("pointLights[2].constant", 1.0f);
-	boxShader.setUniformFloat("pointLights[2].linear", 0.09f);
-	boxShader.setUniformFloat("pointLights[2].quadratic", 0.032f);
-	//point light 4
-	boxShader.setUniformVec3("pointLights[3].position", pointLightPositions[3]);
-	boxShader.setUniformVec3("pointLights[3].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-	boxShader.setUniformVec3("pointLights[3].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-	boxShader.setUniformVec3("pointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	boxShader.setUniformFloat("pointLights[3].constant", 1.0f);
-	boxShader.setUniformFloat("pointLights[3].linear", 0.09f);
-	boxShader.setUniformFloat("pointLights[3].quadratic", 0.032f);
-	//spot light
-	boxShader.setUniformVec3("torch.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	boxShader.setUniformVec3("torch.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	boxShader.setUniformVec3("torch.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	boxShader.setUniformFloat("torch.constant", 1.0f);
-	boxShader.setUniformFloat("torch.linear", 0.09f);
-	boxShader.setUniformFloat("torch.quadratic", 0.032f);
-	boxShader.setUniformFloat("torch.cutoff", glm::cos(glm::radians(8.0f)));
-	boxShader.setUniformFloat("torch.outCutoff", glm::cos(glm::radians(15.0f)));
 	
 	glEnable(GL_DEPTH_TEST);
 	while (!glfwWindowShouldClose(window))
@@ -216,15 +235,24 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, Textures[wood]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, Textures[iron]);
+
+		//because we need to wander in the scene,
+		//the view matrix and projection(zoom) matrix may changed in every frame
+		glBindBuffer(GL_UNIFORM_BUFFER, Uniforms[vpMatirx]);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
+		glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(proj));
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		
 		boxShader.use();
 		//spotLight's position and direction, these two vector may changed in every frame
-		boxShader.setUniformVec3("torch.position", camera.position);
-		boxShader.setUniformVec3("torch.direction", camera.front);
-		//because we need to wander in the scene,
-		//the view matrix and projection(zoom) matrix may changed in every frame
-		boxShader.setUniformMat4("view", view);
-		boxShader.setUniformMat4("projection", proj);
+		for (size_t i = 0; i < SpotLightNum; ++i)
+		{
+			GLuint baseOffset = 64 + PointLightNum * 80 + i * 112;
+			sLights[i].position = camera.position;
+			sLights[i].direction = camera.front;
+			sLights[i].setUniform(Uniforms[lights], baseOffset);
+		}
+		
 		boxShader.setUniformVec3("viewPos", camera.position);
 		//draw 10 boxes
 		for (size_t i = 0; i < 10; ++i)
@@ -239,8 +267,8 @@ int main()
 		}
 		
 		lampShader.use();
-		lampShader.setUniformMat4("view", view);
-		lampShader.setUniformMat4("projection", proj);
+		//because we use ubo, so there is no need to set uniform mat4 view and projection
+		//see more detail in lamp.vert and box.vert
 		//draw 4 point lights
 		for (size_t i = 0; i < 4; ++i)
 		{
