@@ -47,11 +47,14 @@ void Mesh::draw(Shader shader) const
 		glActiveTexture(GL_TEXTURE0 + i);
 		int n = 0;
 		std::string t = textures[i].type;
+		//we use n to judge the texture's name in shader
+		//in shader we must named textures as "texture_diffuseN" or "texture_specularN" or others(N is start from 1)
 		if (t == "texture_diffuse")
 			n = diffNum++;
 		else if (t == "texture_specular")
 			n = specNum++;
 		std::string N = std::to_string(n);
+		//don't forget "material.", in shader the sampler of texture is in Material structure
 		shader.setUniformInt("material." + t + N, i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
@@ -68,6 +71,12 @@ void Mesh::draw(Shader shader) const
 
 void Mesh::setupVAO()
 {
+	if (vertices.empty())
+	{
+		std::cerr << "Vertices load failed!" << std::endl;
+		return;
+	}
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);

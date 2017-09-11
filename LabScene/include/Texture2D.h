@@ -11,8 +11,8 @@
 struct Texture2D
 {
 	GLuint id;
-	std::string type;
-	std::string path;
+	std::string type;    //texture's type(diffuse texture or specular texture or others)
+	std::string path;    //texture source image's file path(this member is used to identify the texture's source image)
 
 	void loadFromFile(const std::string p);
 };
@@ -22,7 +22,6 @@ void Texture2D::loadFromFile(const std::string p)
 	glGenTextures(1, &id);
 
 	int width, height, nrComponents;
-
 	unsigned char *data = stbi_load(p.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
 	{
