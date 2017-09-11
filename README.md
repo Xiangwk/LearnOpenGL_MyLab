@@ -105,3 +105,11 @@ With UBO(Uniform Buffer Object), the same uniform value in different shaders onl
 The Lights in the scene is a good example to use UBO.
 
 I also create a UBO for store the view matrix and projection matrix!
+
+# VII. Load Model and build a LabScene
+
+In this section I add a model loader and abstract texture to a class. This work could make my life a little comfortable by getting rid of creating and binding VAO, VBO and so on.
+
+I will continue to optimize the implementation. Welcome to have try.
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/LabScene.png" width="400" />
