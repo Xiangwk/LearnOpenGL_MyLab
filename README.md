@@ -113,3 +113,16 @@ In this section I add a model loader and abstract texture to a class. This work 
 I will continue to optimize the implementation. Welcome to have try.
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/LabScene.png" width="400" />
+
+# VIII. Blending
+
+In this section I add some grass on the ground. Actually draw some grass not use blending, it just discard the fragments which are no need to draw.
+
+I will implement the Order Independent Transparency(OIT) in the next or next next or ... section, it is really a complicated algorithm to make blending.
+
+But the process of implementation is worthy! We have no need to sort the transparent object in our scene and will learn more advance features of OpenGL.
+
+Note that the grass's texture must set wrap as clamp_to_edge, not repeat. The effect show in two pictures.
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/repeat.png" width="400" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/clamp_to_edge.png" width="400" />
