@@ -124,5 +124,4 @@ But the process of implementation is worthy! We have no need to sort the transpa
 
 Note that the grass's texture must set wrap as clamp_to_edge, not repeat. The effect show in two pictures.
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/repeat.png" width="400" />
-<img src="http://ovi8mw7d8.bkt.clouddn.com/clamp_to_edge.png" width="400" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/repeat.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/clamp_to_edge.png" width="400" />
