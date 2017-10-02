@@ -125,3 +125,19 @@ But the process of implementation is worthy! We have no need to sort the transpa
 Note that the grass's texture must set wrap as clamp_to_edge, not repeat. The effect show in two pictures.
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/repeat.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/clamp_to_edge.png" width="400" />
+
+# IX. Spaceport
+
+In this section I replace the floor to a tranparent plane and add a skybox!
+
+I also update the nanosuit, add some reflect maps. The new resource can be downloaded here:<https://learnopengl-cn.github.io/data/nanosuit_reflection.zip>
+
+I will build a space station soon after.
+
+This two pictures show the difference:
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/no_reflect.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/reflect_map.png" width="400" />
+
+The tranparent plane and the new scene:
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/transparentPlane.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/spaceStation.png" width="400" />
