@@ -134,8 +134,6 @@ I also update the nanosuit, add some reflect maps. The new resource can be downl
 
 Note that many files are updated, like the shader of nanosuit, the Model.h and Mesh.h and so on. The header files now all store in the folder include, you can find it in the root directory.
 
-I will build a space station soon after.
-
 This two pictures show the difference:
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/no_reflect.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/reflect_map.png" width="400" />
