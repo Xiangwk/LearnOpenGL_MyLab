@@ -112,12 +112,14 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	}
 	//process material
 	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+	std::vector<Texture2D> reflectMap = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflect");
+	textures.insert(textures.end(), reflectMap.begin(), reflectMap.end());
 	std::vector<Texture2D> diffMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffMaps.begin(), diffMaps.end());
 	std::vector<Texture2D> specMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 	textures.insert(textures.end(), specMaps.begin(), specMaps.end());
 	
-	return Mesh(vertices, indices, textures);
+	return Mesh(vertices, textures, indices);
 }
 
 std::vector<Texture2D> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string &typeName)

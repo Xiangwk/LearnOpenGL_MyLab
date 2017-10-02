@@ -21,41 +21,46 @@ class Mesh
 {
 public:
 	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
 	std::vector<Texture2D> textures;
+	std::vector<GLuint> indices;
 
 	GLuint VAO, VBO, EBO;
 
-	Mesh(const std::vector<Vertex> &v, const std::vector<GLuint> &i, const std::vector<Texture2D> &t);
+	Mesh(const std::vector<Vertex> &v, const std::vector<Texture2D> &t = {}, const std::vector<GLuint> &i = {});
 	void draw(Shader shader) const;
 
 private:
 	void setupVAO();
 };
 
-Mesh::Mesh(const std::vector<Vertex> &v, const std::vector<GLuint> &i, const std::vector<Texture2D> &t) :
-vertices(v), indices(i), textures(t) 
+Mesh::Mesh(const std::vector<Vertex> &v, const std::vector<Texture2D> &t, const std::vector<GLuint> &i) :
+vertices(v), textures(t), indices(i)
 {
 	setupVAO();
 }
 
 void Mesh::draw(Shader shader) const
 {
-	unsigned diffNum = 1, specNum = 1;
+	unsigned diffNum = 1, specNum = 1, reflectNum = 1;
 	for (size_t i = 0; i < textures.size(); ++i)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		int n = 0;
 		std::string t = textures[i].type;
-		//we use n to judge the texture's name in shader
-		//in shader we must named textures as "texture_diffuseN" or "texture_specularN" or others(N is start from 1)
-		if (t == "texture_diffuse")
-			n = diffNum++;
-		else if (t == "texture_specular")
-			n = specNum++;
-		std::string N = std::to_string(n);
-		//don't forget "material.", in shader the sampler of texture is in Material structure
-		shader.setUniformInt("material." + t + N, i);
+		if (!t.empty())
+		{
+			//we use n to judge the texture's name in shader
+			//in shader we must named textures as "texture_diffuseN" or "texture_specularN" or others(N is start from 1)
+			if (t == "texture_diffuse")
+				n = diffNum++;
+			else if (t == "texture_specular")
+				n = specNum++;
+			else if (t == "texture_reflect")
+				n = reflectNum++;
+			std::string N = std::to_string(n);
+			//don't forget "material.", in shader the sampler of texture is in Material structure
+			shader.setUniformInt("material." + t + N, i);
+		}
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
 

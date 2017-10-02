@@ -27,7 +27,7 @@ public:
 	glm::vec3 diffuse;
 	glm::vec3 specular;
 
-	void setUniform(GLuint id, GLuint offset);
+	void setUniform(GLuint id, GLuint offset) const;
 };
 
 class PointLight
@@ -42,7 +42,7 @@ public:
 	//the attenuation factor
 	Attenuation atten;
 
-	void setUniform(GLuint id, GLuint offset);
+	void setUniform(GLuint id, GLuint offset) const;
 };
 
 class SpotLight
@@ -59,10 +59,10 @@ public:
 	//cutoff angle
 	Cutoff cutoff;
 
-	void setUniform(GLuint id, GLuint offset);
+	void setUniform(GLuint id, GLuint offset) const;
 };
 
-void DirLight::setUniform(GLuint id, GLuint offset)
+void DirLight::setUniform(GLuint id, GLuint offset) const
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	glBufferSubData(GL_UNIFORM_BUFFER, offset +  0, 16, glm::value_ptr(direction));
@@ -72,7 +72,7 @@ void DirLight::setUniform(GLuint id, GLuint offset)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void PointLight::setUniform(GLuint id, GLuint offset)
+void PointLight::setUniform(GLuint id, GLuint offset) const
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	glBufferSubData(GL_UNIFORM_BUFFER, offset + 0, 16, glm::value_ptr(position));
@@ -85,7 +85,7 @@ void PointLight::setUniform(GLuint id, GLuint offset)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void SpotLight::setUniform(GLuint id, GLuint offset)
+void SpotLight::setUniform(GLuint id, GLuint offset) const
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, id);
 	glBufferSubData(GL_UNIFORM_BUFFER, offset + 0, 16, glm::value_ptr(position));
