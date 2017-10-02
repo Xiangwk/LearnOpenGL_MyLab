@@ -132,6 +132,8 @@ In this section I replace the floor to a tranparent plane and add a skybox!
 
 I also update the nanosuit, add some reflect maps. The new resource can be downloaded here:<https://learnopengl-cn.github.io/data/nanosuit_reflection.zip>
 
+Note that many files are updated, like the shader of nanosuit, the Model.h and Mesh.h and so on. The header files now all store in the folder include, you can find it in the root directory.
+
 I will build a space station soon after.
 
 This two pictures show the difference:
