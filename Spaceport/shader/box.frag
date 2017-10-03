@@ -93,7 +93,11 @@ void main()
 	for(int i = 0; i < SpotLightNum; ++i)
 	    result += calcSpotLight(torch[i], Normal, FragPos, viewPos);
 
-    fragColor = vec4(result, 1.0f);
+	//for the back face, no need to caculate lighting
+	if(gl_FrontFacing)
+	    fragColor = vec4(result, 1.0f);
+	else
+	    fragColor = texture(material.texture_diffuse1, TexCoord) * 0.5f;
 }
 
 float diff(vec3 lightDir, vec3 normal)
