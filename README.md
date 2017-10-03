@@ -135,3 +135,11 @@ I also update the nanosuit, add some reflect maps. The new resource can be downl
 The skybox can be found in this web:<http://www.custommapmakers.org/skyboxes.php>, note that you may need to convert the format to .jpg!
 
 Note that many files are updated, like the shader of nanosuit, the Model.h and Mesh.h and so on. The header files now all store in the folder include, you can find it in the root directory.
+
+This two pictures show the difference:
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/no_reflectMap.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/reflectMap.png" width="400" />
+
+This picture show the new scene:
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/spaceport.png" width="400" />
