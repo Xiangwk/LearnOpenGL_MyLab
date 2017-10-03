@@ -138,8 +138,8 @@ Note that many files are updated, like the shader of nanosuit, the Model.h and M
 
 This two pictures show the difference:
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/no_reflectMap.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/reflectMap.png" width="400" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/no_reflect.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/show_reflect.png" width="400" />
 
 This picture show the new scene:
 
-<img src="http://ovi8mw7d8.bkt.clouddn.com/spaceport.png" width="400" />
+<img src="http://ovi8mw7d8.bkt.clouddn.com/space_scene.png" width="400" />
