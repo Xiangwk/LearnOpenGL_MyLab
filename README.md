@@ -143,3 +143,11 @@ This two pictures show the difference:
 This picture show the new scene:
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/space_scene.png" width="400" />
+
+# X. Show Normal
+
+In this section I add geometry shader(update the Shader.h, you can download it in include/) and use it to show the model's normal.
+
+This is a very useful function when you debug the lighting!
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/show_normal.png" width="400" />
