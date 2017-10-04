@@ -5,7 +5,7 @@ layout(location = 1) in vec3 vNormal;
 
 out VS_OUT
 {
-    vec3 Normal;
+    vec4 normalPos;
 }vs_out;
 
 uniform mat4 model;
@@ -15,9 +15,11 @@ layout(std140, binding = 0) uniform Matrix
     mat4 projection;
 };
 
+const float MAGNITUDE = 0.2;
+
 void main()
 {
 	gl_Position = projection * view * model * vec4(vPosition, 1.0f);
-	mat3 normalMatrix = mat3(transpose(inverse(view * model)));
-	vs_out.Normal = normalize(vec3(projection * vec4(normalMatrix * vNormal, 1.0f)));
+	//the normal need to translate to clip-coordinate
+	vs_out.normalPos = projection * view * model * vec4(vPosition + normalize(vNormal) * MAGNITUDE, 1.0f);
 }
