@@ -169,6 +169,7 @@ int main()
 	Shader planeShader("plane.vert", "transplane.frag");
 	Shader grassShader("grass.vert", "grass.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
+	Shader showNormalShader("showNormal.vert", "showNormal.frag", "showNormal.geom");
 
 	//create lights ubo
 	glGenBuffers(NumUniforms, Uniforms);
@@ -246,6 +247,8 @@ int main()
 	nanosuitShader.use();
 	nanosuitShader.setUniformMat4("model", trans);
 	nanosuitShader.setUniformFloat("material.shininess", 32.0f);
+	showNormalShader.use();
+	showNormalShader.setUniformMat4("model", trans);
 
 	trans = glm::mat4();
 	trans = glm::scale(trans, glm::vec3(2.0f, 2.0f, 2.0f));
@@ -315,6 +318,9 @@ int main()
 		glBindTexture(GL_TEXTURE_CUBE_MAP, sky.textureID);
 		nanosuit.draw(nanosuitShader);
 
+		showNormalShader.use();
+		nanosuit.draw(showNormalShader);
+
 		//the z-value of skybox is always 1.0f(to know the details, see in shader, I set the z equals to w)
 		//so we set depthFunc to less-equal to make skybox pass the depth test
 		glDepthFunc(GL_LEQUAL);
@@ -322,13 +328,13 @@ int main()
 		sky.draw(skyboxShader);
 
 		glDepthFunc(GL_LESS);
-
 		//draw the transparent plane
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		planeShader.use();
 		planeShader.setUniformVec3("viewPos", camera.position);
 		plane.draw(planeShader);
+		glDisable(GL_BLEND);
 
 		//swap frame buffer
 		glfwSwapBuffers(window);

@@ -15,7 +15,7 @@ class Shader
 public:
 	GLuint program;
 
-	Shader(const std::string &vPath, const std::string &fPath);
+	Shader(const std::string &vPath, const std::string &fPath, const std::string &gPath = "");
 	void use() const;
 	void setUniformBool(const std::string &name, GLboolean value) const;
 	void setUniformInt(const std::string &name, GLint value) const;
@@ -27,7 +27,7 @@ private:
 	void checkErro(GLuint shader, const std::string &type) const;
 };
 
-Shader::Shader(const std::string &vPath, const std::string &fPath)
+Shader::Shader(const std::string &vPath, const std::string &fPath, const std::string &gPath)
 {
 	//read the code from shader file
 	std::ifstream vertFile, fragFile;
@@ -76,6 +76,36 @@ Shader::Shader(const std::string &vPath, const std::string &fPath)
 
 	glDeleteShader(vshader);
 	glDeleteShader(fshader);
+
+	if (!gPath.empty())
+	{
+		std::ifstream geomFile;
+		std::string geomCode;
+		geomFile.exceptions(std::ifstream::badbit | std::ifstream::failbit);
+		try
+		{
+			geomFile.open(gPath);
+			std::stringstream gStream;
+			gStream << geomFile.rdbuf();
+			geomCode = gStream.str();
+		}
+		catch (std::ifstream::failure e)
+		{
+			std::cerr << "ERRO::SHADER::FILE_NOT_SUCCESSFULLY_READ";
+			std::abort();
+		}
+		const char *gc = geomCode.c_str();
+		GLuint gshader = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(gshader, 1, &gc, nullptr);
+		glCompileShader(gshader);
+		checkErro(gshader, "GEOMETRY");
+
+		glAttachShader(program, gshader);
+		glLinkProgram(program);
+		checkErro(program, "PROGRAM");
+
+		glDeleteShader(gshader);
+	}
 }
 
 void Shader::use() const
