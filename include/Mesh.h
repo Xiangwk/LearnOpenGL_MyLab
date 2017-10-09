@@ -15,6 +15,8 @@ struct Vertex
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 texCoord;
+	glm::vec3 tangent;
+	glm::vec3 biTangent;
 };
 
 class Mesh
@@ -41,7 +43,7 @@ vertices(v), textures(t), indices(i)
 
 void Mesh::draw(Shader shader) const
 {
-	unsigned diffNum = 1, specNum = 1, reflectNum = 1;
+	unsigned diffNum = 1, specNum = 1, reflectNum = 1, normalNum = 1;
 	for (size_t i = 0; i < textures.size(); ++i)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
@@ -57,6 +59,8 @@ void Mesh::draw(Shader shader) const
 				n = specNum++;
 			else if (t == "texture_reflect")
 				n = reflectNum++;
+			else if (t == "texture_normal")
+				n = normalNum++;
 			std::string N = std::to_string(n);
 			//don't forget "material.", in shader the sampler of texture is in Material structure
 			shader.setUniformInt("material." + t + N, i);
@@ -100,5 +104,10 @@ void Mesh::setupVAO()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, biTangent));
+	glEnableVertexAttribArray(4);
+
 	glBindVertexArray(0);
 }

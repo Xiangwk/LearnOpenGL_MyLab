@@ -15,6 +15,7 @@ class Shader
 public:
 	GLuint program;
 
+	Shader() = default;
 	Shader(const std::string &vPath, const std::string &fPath, const std::string &gPath = "");
 	void use() const;
 	void setUniformBool(const std::string &name, GLboolean value) const;

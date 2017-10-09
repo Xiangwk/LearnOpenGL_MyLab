@@ -44,7 +44,7 @@ void Model::loadModel(const std::string &path)
 {
 	Assimp::Importer importer;
 	//we postprocess all mesh in the original model to triangle and flip the images
-	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		std::cerr << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
@@ -100,6 +100,17 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 		}
 		else
 			vert.texCoord = glm::vec2(0.0f, 0.0f);
+		//tangent
+		v3.x = mesh->mTangents[i].x;
+		v3.y = mesh->mTangents[i].y;
+		v3.z = mesh->mTangents[i].z;
+		vert.tangent = v3;
+		//biTangent
+		v3.x = mesh->mBitangents[i].x;
+		v3.y = mesh->mBitangents[i].y;
+		v3.z = mesh->mBitangents[i].z;
+		vert.biTangent = v3;
+
 		//the processed data store in the vector
 		vertices.push_back(vert);
 	}
@@ -112,12 +123,14 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 	}
 	//process material
 	aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-	std::vector<Texture2D> reflectMap = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflect");
-	textures.insert(textures.end(), reflectMap.begin(), reflectMap.end());
 	std::vector<Texture2D> diffMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffMaps.begin(), diffMaps.end());
 	std::vector<Texture2D> specMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 	textures.insert(textures.end(), specMaps.begin(), specMaps.end());
+	std::vector<Texture2D> reflectMap = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflect");
+	textures.insert(textures.end(), reflectMap.begin(), reflectMap.end());
+	std::vector<Texture2D> normMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+	textures.insert(textures.end(), normMaps.begin(), normMaps.end());
 	
 	return Mesh(vertices, textures, indices);
 }
