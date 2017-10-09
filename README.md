@@ -151,3 +151,15 @@ In this section I add geometry shader(update the Shader.h, you can download it i
 This is a very useful function when you debug the lighting!
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/show_normal.png" width="400" />
+
+# XI. A Important update(Shadow)
+
+In this section I add shadow to our scene and some normal map.
+
+This two pictures show the normal map:
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/without_normalmap.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/with_normalmap.png" width="400" />
+
+This two pictures show the shadow of directional light and spot light:
+
+<img src="http://ovi8mw7d8.bkt.clouddn.com/dirShadow.png" width="400" /><img src="http://ovi8mw7d8.bkt.clouddn.com/spotShadow.png" width="400" />
