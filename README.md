@@ -152,7 +152,7 @@ This is a very useful function when you debug the lighting!
 
 <img src="http://ovi8mw7d8.bkt.clouddn.com/show_normal.png" width="400" />
 
-# XI. A Important update(Shadow)
+# XI. An Important update(Shadow)
 
 In this section I add shadow to our scene and some normal map.
 
